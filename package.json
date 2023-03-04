@@ -4,13 +4,13 @@
   "description": "A minimal HTTP server with good developer-experience and performance, for Node and beyond.",
   "version": "0.1.0",
   "type": "module",
-  "main": "dist/adapters/node.js",
-  "types": "./dist/adapters/node.d.ts",
+  "main": "dist/index.js",
+  "types": "./dist/index.d.ts",
   "sideEffects": false,
   "exports": {
     ".": {
-      "import": "./dist/adapters/node.js",
-      "types": "./dist/adapters/node.d.ts"
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     },
     "./abstract": {
       "import": "./dist/adapters/abstract.js",
@@ -66,7 +66,7 @@
   "devDependencies": {
     "@types/node": "^18.14.6",
     "fava": "^0.2.0",
-    "tsex": "^2.2.1",
+    "tsex": "^2.2.2",
     "typescript": "^4.9.5"
   }
 }

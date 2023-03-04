@@ -25,12 +25,12 @@ const test = async ( t, app, path, options, output ) => {
 
   let _req;
   let _res;
-  let _fetch = server.fetch;
+  let _handle = server.handle;
 
-  server.fetch = ( req, res ) => {
+  server.handle = ( req, res ) => {
     _req = req;
     _res = res;
-    return _fetch.call ( server, req, res );
+    return _handle.call ( server, req, res );
   };
 
   open ();
