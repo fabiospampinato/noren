@@ -92,6 +92,10 @@ app.get ( '/some-(foo|bar)', handle ) // Alternation
 
 app.listen ( 4000 );
 
+// Get the used port -- useful when setting the prot to 0, which lets the OS pick a number
+
+app.port ();
+
 // Stopping listening
 
 app.close ();
