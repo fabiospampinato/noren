@@ -5,23 +5,28 @@ import type {RequestHandler} from '~/server/types';
 
 /* MAIN */
 
-const logger: RequestHandler = async ( req, res, next ) => {
+const logger = (): RequestHandler => {
 
-  const method = req.method;
-  const path = `${req.url.pathname}${req.url.search}`;
-  const start = Date.now ();
+  return async ( req, res, next ) => {
 
-  await next ();
+    const method = req.method;
+    const path = `${req.url.pathname}${req.url.search}`;
+    const start = Date.now ();
 
-  const end = Date.now ();
-  const elapsed = end - start;
+    await next ();
 
-  const date = new Date ();
-  const timestamp = date.toISOString ();
+    const end = Date.now ();
+    const elapsed = end - start;
 
-  const message = `[${timestamp}] ${method} ${res.statusCode} ${elapsed}ms ${path}`;
+    const date = new Date ();
+    const timestamp = date.toISOString ();
+    const code = res.statusCode;
 
-  res.log.debug ( message );
+    const message = `[${timestamp}] ${method} ${code} ${elapsed}ms ${path}`;
+
+    res.log.debug ( message );
+
+  };
 
 };
 

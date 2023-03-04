@@ -5,11 +5,15 @@ import type {RequestHandler} from '~/server/types';
 
 /* MAIN */
 
-const poweredBy: RequestHandler = async ( req, res, next ) => {
+const poweredBy = (): RequestHandler => {
 
-  await next ();
+  return async ( req, res, next ) => {
 
-  res.header ( 'X-Powered-By', 'Noren' );
+    await next ();
+
+    res.header ( 'X-Powered-By', 'Noren' );
+
+  };
 
 };
 

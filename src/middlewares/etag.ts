@@ -6,9 +6,9 @@ import type {RequestHandler} from '~/server/types';
 
 /* HELPERS */
 
-const hash = ( value?: Uint8Array | string ): Promise<string> | string => {
+const getHash = ( value?: Uint8Array | string ): Promise<string> | string => {
 
-  if ( !value?.length ) { // Empty value, fast path
+  if ( !value?.length ) { // Empty value, fast path with hard-coded hash
 
     return 'da39a3ee5e6b4b0d3255bfef95601890afd80709';
 
@@ -22,24 +22,28 @@ const hash = ( value?: Uint8Array | string ): Promise<string> | string => {
 
 /* MAIN */
 
-const etag: RequestHandler = async ( req, res, next ) => {
+const etag = (): RequestHandler => {
 
-  const ifNoneMatch = req.header ( 'if-none-match' );
+  return async ( req, res, next ) => {
 
-  await next ();
+    const ifNoneMatch = req.header ( 'if-none-match' );
 
-  const entity = await hash ( res.body );
-  const etag = `"${entity}"`;
+    await next ();
 
-  if ( ifNoneMatch === etag ) {
+    const hash = await getHash ( res.body );
+    const etag = `"${hash}"`;
 
-    res.status ( 304, '' );
+    if ( ifNoneMatch === etag ) {
 
-  } else {
+      res.status ( 304 );
 
-    res.header ( 'ETag', etag );
+    } else {
 
-  }
+      res.header ( 'ETag', etag );
+
+    }
+
+  };
 
 };
 

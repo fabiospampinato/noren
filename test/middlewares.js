@@ -11,7 +11,7 @@ const appEtag = () => {
 
   return appWith ( app => {
 
-    app.use ( etag );
+    app.use ( etag () );
 
     app.get ( '/empty', () => {} );
     app.get ( '/hello', ( req, res ) => res.text ( 'Hello!' ) );
@@ -24,7 +24,7 @@ const appPoweredBy = () => {
 
   return appWith ( app => {
 
-    app.use ( poweredBy );
+    app.use ( poweredBy () );
 
     app.get ( '*', () => {} );
 

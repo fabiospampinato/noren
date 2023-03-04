@@ -12,8 +12,8 @@ import Server from '../dist/adapters/node.js';
 
 const app = new Server ();
 
-// app.use ( etag );
-// app.use ( logger );
+// app.use ( etag () );
+// app.use ( logger () );
 
 app.get ( '/', ( req, res ) => {
 
