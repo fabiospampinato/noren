@@ -96,13 +96,17 @@ class Server extends Router<RequestHandler> {
 
         }
 
-        if ( this.notFoundHandler ) {
+        if ( !res.finished ) {
 
-          await exec ( this.notFoundHandler, req, res );
+          if ( this.notFoundHandler ) {
 
-        } else {
+            await exec ( this.notFoundHandler, req, res );
 
-          res.status ( 404 );
+          } else {
+
+            res.status ( 404 );
+
+          }
 
         }
 
