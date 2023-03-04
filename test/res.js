@@ -161,7 +161,7 @@ describe ( 'Res', it => {
 
     for ( const code in STATUS ) {
 
-      if ( code < 200 ) continue; //TODO: it throws a "fetch failed" for some reason?
+      if ( code < 200 ) continue; //TODO: fetch throws a "fetch failed" for some reason?
 
       await test ( t, app, `/status-${code}`, {}, {
         statusCode: Number ( code ),

@@ -9,6 +9,7 @@ import type {Method, Params, Route} from '~/router/types';
 /* MAIN */
 
 //TODO: Support sub-routers, with their middlewares, for convenience
+//TODO: Support path-scoped middlewares, for convenience
 
 class Router<T> {
 

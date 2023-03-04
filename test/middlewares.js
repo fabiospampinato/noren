@@ -69,8 +69,6 @@ const appPoweredBy = () => {
 
 /* MAIN */
 
-//TODO: Implement these
-
 describe ( 'middlewares', it => {
 
   it ( 'basicAuth', async t => {
@@ -141,7 +139,7 @@ describe ( 'middlewares', it => {
 
   it ( 'cors', async t => {
 
-    //TODO: Test this way more expensively
+    //TODO: Test this way more extensively
 
     await test ( t, appCors, '/cors', {
       method: 'OPTIONS',
