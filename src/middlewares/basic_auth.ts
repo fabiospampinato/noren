@@ -11,7 +11,7 @@ const basicAuth = ( options: { users: { username: string, password: string }[], 
   const users = options.users;
   const realm = options.realm || 'Protected Area';
 
-  return async ( req, res, next ) => {
+  return async ( req, res ) => {
 
     const credentials = req.credentials;
 
@@ -27,7 +27,7 @@ const basicAuth = ( options: { users: { username: string, password: string }[], 
 
         if ( hash1 === hash2 ) {
 
-          return next ();
+          return; // Authorized
 
         }
 
@@ -38,8 +38,6 @@ const basicAuth = ( options: { users: { username: string, password: string }[], 
     res.status ( 401 );
     res.header ( 'WWW-Authenticate', `Basic realm="${realm}"` );
     res.end ();
-
-    await next ();
 
   };
 
