@@ -6,6 +6,7 @@ import Address from '~/parsers/address';
 import Cookie from '~/parsers/cookie';
 import Credentials from '~/parsers/credentials';
 import {castArrayBuffer} from '~/server/utils';
+import type {JSONValue} from '~/server/types';
 
 /* MAIN */
 
@@ -128,7 +129,7 @@ class Req {
 
   }
 
-  async json (): Promise<any> { //TODO: Improve return type
+  async json (): Promise<JSONValue> {
 
     const text = await this.text ();
     const json = JSON.parse ( text );

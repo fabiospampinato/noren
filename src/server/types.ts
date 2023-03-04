@@ -8,6 +8,8 @@ import type Res from '~/server/res';
 
 type Head<T extends unknown[]> = T extends [...infer Head, unknown] ? Head : never[];
 
+type JSONValue = string | number | boolean | null | JSONValue[] | { [K: string]: JSONValue };
+
 type PromiseMaybe<T> = Promise<T> | T;
 
 /* MAIN */
@@ -22,5 +24,5 @@ type RequestHandler = {
 
 /* EXPORT */
 
-export type {Head, PromiseMaybe};
+export type {Head, JSONValue, PromiseMaybe};
 export type {ErrorHandler, RequestHandler};

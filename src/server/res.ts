@@ -8,6 +8,7 @@ import Logger from '~/server/logger';
 import {isString} from '~/server/utils';
 import type Pioppo from 'pioppo';
 import type {CookieOptions} from '~/parsers/cookie';
+import type {JSONValue} from '~/server/types';
 
 /* MAIN */
 
@@ -128,7 +129,7 @@ class Res {
 
   }
 
-  json ( value: unknown ): this { //TODO: Improve type
+  json ( value: JSONValue ): this {
 
     this.type ( 'application/json' );
     this.send ( JSON.stringify ( value ) );
