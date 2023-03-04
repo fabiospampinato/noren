@@ -1,0 +1,42 @@
+{
+  "name": "noren",
+  "repository": "github:fabiospampinato/noren",
+  "description": "A minimal HTTP server with good developer-experience and performance, for Node and beyond.",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "scripts": {
+    "benchmark": "tsex compile && ( node tasks/benchmark.js & ( sleep 1 && wrk -t12 -c400 -d3s http://0.0.0.0:6173/ && curl http://0.0.0.0:6173/exit ) )",
+    "clean": "tsex clean",
+    "compile": "tsex compile",
+    "compile:watch": "tsex compile --watch",
+    "test": "tsex test",
+    "test:watch": "tsex test --watch",
+    "prepublishOnly": "tsex prepare"
+  },
+  "keywords": [
+    "http",
+    "server",
+    "simple",
+    "minimal",
+    "tiny",
+    "fast"
+  ],
+  "dependencies": {
+    "ext2mime": "^2.0.0",
+    "grammex": "^1.1.0",
+    "promise-make-naked": "^2.0.0",
+    "radix64-encoding": "^2.0.1",
+    "uint8-concat": "^1.0.0",
+    "uint8-encoding": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.14.6",
+    "fava": "^0.2.0",
+    "tsex": "^2.2.1",
+    "typescript": "^4.9.5"
+  }
+}
