@@ -21,7 +21,7 @@ const logger: RequestHandler = async ( req, res, next ) => {
 
   const message = `[${timestamp}] ${method} ${res.statusCode} ${elapsed}ms ${path}`;
 
-  console.log ( message );
+  res.log.debug ( message );
 
 };
 
