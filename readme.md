@@ -149,6 +149,13 @@ res.headers; // Object containing all current response headers
 res.statusCode; // Number representing the returned status code
 res.body; // String or Uint8Array containing the response payload, if any
 
+// Logging
+
+res.log.error ( 'Message' ); // Log an error-level message
+res.log.warn ( 'Message' ); // Log a warning-level message
+res.log.info ( 'Message' ); // Log an info-level message
+res.log.debug ( 'Message' ); // Log a debug-level message
+
 // Methods for writing details of the response
 
 res.append ( key, value ); // Append a header

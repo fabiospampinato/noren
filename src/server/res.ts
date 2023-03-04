@@ -4,7 +4,9 @@
 import ext2mime from 'ext2mime';
 import Cookie from '~/parsers/cookie';
 import {STATUS} from '~/server/constants';
+import Logger from '~/server/logger';
 import {isString} from '~/server/utils';
+import type Pioppo from 'pioppo';
 import type {CookieOptions} from '~/parsers/cookie';
 
 /* MAIN */
@@ -14,6 +16,7 @@ class Res {
   /* VARIABLES */
 
   headers: Headers;
+  log: Pioppo;
   statusCode: number;
   body?: Uint8Array | string;
 
@@ -22,6 +25,7 @@ class Res {
   constructor () {
 
     this.headers = new Headers ();
+    this.log = Logger;
     this.statusCode = 500;
 
   }
