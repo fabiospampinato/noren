@@ -40,6 +40,5 @@ describe ( 'middlewares', it => {
   // cache
   // cors
   // etag
-  // logger
 
 });

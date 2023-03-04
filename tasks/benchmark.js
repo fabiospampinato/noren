@@ -1,6 +1,7 @@
 
 /* IMPORT */
 
+import {logger} from '../dist/middlewares/index.js';
 import Server from '../dist/adapters/node.js';
 
 /* MAIN */
@@ -10,6 +11,8 @@ import Server from '../dist/adapters/node.js';
 //TODO: Get to around 60~70k req/s, currently at ~40k
 
 const app = new Server ();
+
+// app.use ( logger );
 
 app.get ( '/', ( req, res ) => {
 
