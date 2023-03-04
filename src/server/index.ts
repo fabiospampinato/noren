@@ -22,7 +22,7 @@ class Server extends Router<RequestHandler> {
 
   /* API */
 
-  async fetch ( req: Req, res: Res ): Promise<Res> {
+  async handle ( req: Req, res: Res ): Promise<Res> {
 
     //TODO: This function is a bit ugly, though it's also kinda complicated, maybe it can be written better?
 

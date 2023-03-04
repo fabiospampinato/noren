@@ -25,71 +25,9 @@ class NodeServer extends Server {
 
     super ();
 
-    /* SERVER  */
-
     this.server = createServer ();
 
-    /* REQUEST HANDLING */
-
-    this.server.on ( 'request', ( incoming, outgoing ) => {
-
-      const environment = process.env;
-      const headers: Record<string, string> = {};
-      const method = incoming.method?.toUpperCase () || '';
-      const host = incoming.headers.host || '0.0.0.0';
-      const pathname = ( incoming.url || '/' ).replace ( /^\/\/+/, '/' );
-      const url = `http://${host}${pathname}`;
-      const chunks: Buffer[] = [];
-
-      for ( let i = 0, l = incoming.rawHeaders.length; i < l; i += 2 ) {
-
-        const key = incoming.rawHeaders[i].toLowerCase ();
-        const value = incoming.rawHeaders[i + 1];
-
-        headers[key] = value;
-
-      }
-
-      incoming.on ( 'data', chunk => {
-
-        chunks.push ( chunk );
-
-      });
-
-      incoming.on ( 'end', async () => {
-
-        if ( !incoming.complete ) return outgoing.end (); // Aborted
-
-        const body = concat ( chunks );
-        const init = { body, environment, headers, method };
-        const req = new Req ( url, init );
-        const res = new Res ();
-
-        await this.fetch ( req, res );
-
-        outgoing.statusCode = res.statusCode;
-
-        //TODO: use "outgoingMessage.setHeaders" eventually, but it requires Node v19
-
-        res.headers.forEach ( ( value, key ) => {
-
-          outgoing.setHeader ( key, value );
-
-        });
-
-        if ( res.body?.length ) {
-
-          outgoing.end ( res.body );
-
-        } else {
-
-          outgoing.end ();
-
-        }
-
-      });
-
-    });
+    this.server.on ( 'request', this.fetch.bind ( this ) );
 
   }
 
@@ -100,6 +38,66 @@ class NodeServer extends Server {
     this.server.close ();
 
     return this;
+
+  }
+
+  async fetch ( incoming: IncomingMessage, outgoing: ServerResponse ): Promise<void> {
+
+    const environment = process.env;
+    const headers: Record<string, string> = {};
+    const method = incoming.method?.toUpperCase () || '';
+    const host = incoming.headers.host || '0.0.0.0';
+    const pathname = ( incoming.url || '/' ).replace ( /^\/\/+/, '/' );
+    const url = `http://${host}${pathname}`;
+    const chunks: Buffer[] = [];
+
+    for ( let i = 0, l = incoming.rawHeaders.length; i < l; i += 2 ) {
+
+      const key = incoming.rawHeaders[i].toLowerCase ();
+      const value = incoming.rawHeaders[i + 1];
+
+      headers[key] = value;
+
+    }
+
+    incoming.on ( 'data', chunk => {
+
+      chunks.push ( chunk );
+
+    });
+
+    incoming.on ( 'end', async () => {
+
+      if ( !incoming.complete ) return outgoing.end (); // Aborted
+
+      const body = concat ( chunks );
+      const init = { body, environment, headers, method };
+      const req = new Req ( url, init );
+      const res = new Res ();
+
+      await this.handle ( req, res );
+
+      outgoing.statusCode = res.statusCode;
+
+      //TODO: use "outgoingMessage.setHeaders" eventually, but it requires Node v19
+
+      res.headers.forEach ( ( value, key ) => {
+
+        outgoing.setHeader ( key, value );
+
+      });
+
+      if ( res.body?.length ) {
+
+        outgoing.end ( res.body );
+
+      } else {
+
+        outgoing.end ();
+
+      }
+
+    });
 
   }
 
