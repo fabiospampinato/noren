@@ -1,7 +1,7 @@
 
 /* IMPORT */
 
-import {logger} from '../dist/middlewares/index.js';
+import {etag, logger} from '../dist/middlewares/index.js';
 import Server from '../dist/adapters/node.js';
 
 /* MAIN */
@@ -12,6 +12,7 @@ import Server from '../dist/adapters/node.js';
 
 const app = new Server ();
 
+// app.use ( etag );
 // app.use ( logger );
 
 app.get ( '/', ( req, res ) => {
