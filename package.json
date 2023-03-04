@@ -4,10 +4,40 @@
   "description": "A minimal HTTP server with good developer-experience and performance, for Node and beyond.",
   "version": "0.1.0",
   "type": "module",
-  "main": "dist/index.js",
-  "exports": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "dist/adapters/node.js",
+  "types": "./dist/adapters/node.d.ts",
   "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": "./dist/adapters/node.js",
+      "types": "./dist/adapters/node.d.ts"
+    },
+    "./abstract": {
+      "import": "./dist/adapters/abstract.js",
+      "types": "./dist/adapters/abstract.d.ts"
+    },
+    "./edge": {
+      "import": "./dist/adapters/edge.js",
+      "types": "./dist/adapters/edge.d.ts"
+    },
+    "./node": {
+      "import": "./dist/adapters/node.js",
+      "types": "./dist/adapters/node.d.ts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "abstract": [
+        "./dist/adapters/abstract.d.ts"
+      ],
+      "edge": [
+        "./dist/adapters/edge.d.ts"
+      ],
+      "node": [
+        "./dist/adapters/node.d.ts"
+      ]
+    }
+  },
   "scripts": {
     "benchmark": "tsex compile && ( node tasks/benchmark.js & ( sleep 1 && wrk -t12 -c400 -d3s http://0.0.0.0:6173/ && curl http://0.0.0.0:6173/exit ) )",
     "clean": "tsex clean",
