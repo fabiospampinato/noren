@@ -145,6 +145,7 @@ The res object provides the following APIs:
 ```ts
 // Instance variables
 
+res.finished; // Whether the request was ended early, potentially skipping some middlewares
 res.headers; // Object containing all current response headers
 res.statusCode; // Number representing the returned status code
 res.body; // String or Uint8Array containing the response payload, if any
@@ -172,6 +173,80 @@ res.html ( value ); // Set an HTML string as the response body, with proper MIME
 res.json ( value ); // Set a JSON value as the response body, with proper MIME type
 res.text ( value ); // Set a plain string as the response body, with proper MIME type
 res.send ( value ); // Set a string or Uint8Array as the response body, with no automatic MIME type
+
+// Other methods
+
+res.end (); // Signal that the request has been handled, skipping execution of any eventual other middlewares
+```
+
+## Middleware
+
+Middlewares are used like this:
+
+```ts
+import Server from 'noren/node';
+
+const app = new Server ();
+
+// Creating a custom middleware
+
+const customMiddleware = () => {
+  return async ( req, res, next ) => {
+    // Maybe do something before going onto the next middleware...
+    await next ();
+    // Maybe do something after all other middlewares executed...
+  };
+};
+
+// Registering a global middleware
+
+app.use ( customMiddleware () );
+
+// Register a route-level middleware
+
+app.get ( '/foo', customMiddleware (), ( req, res ) => {
+  // Handle the request...
+});
+```
+
+The following built-in middlewares are provided:
+
+```ts
+import {basicAuth, cors, etag, logger, poweredBy} from 'noren/middlewares';
+import Server from 'noren/node';
+
+const app = new Server ();
+
+// Putting routes under Basic authentication
+
+app.use ( basicAuth ({
+  users: [
+    {
+      username: 'aladdin',
+      password: 'opensesame'
+    },
+    {
+      username: 'hermione',
+      password: 'alohomora'
+    }
+  ]
+}));
+
+// Allowing CORS requests (no options are implemented at the moment, this middleware is super basic)
+
+app.use ( cors () );
+
+// Returning ETag headers, only strong etags are supported, which are somewhat expensive to generate
+
+app.use ( etag () );
+
+// Log requests to the console, with very little overhead
+
+app.use ( logger () );
+
+// Add the X-Powered-By header, with "Noren" as the value, to every response
+
+app.use ( poweredBy () );
 ```
 
 ## License
