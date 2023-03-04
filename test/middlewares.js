@@ -88,7 +88,6 @@ describe ( 'middlewares', it => {
 
   // basic_auth
   // bearer_auth
-  // cache
   // cors
 
 });
