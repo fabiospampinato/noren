@@ -2,7 +2,7 @@
 /* IMPORT */
 
 import {describe} from 'fava';
-import {basicAuth, etag, poweredBy} from '../dist/middlewares/index.js';
+import {basicAuth, cors, etag, poweredBy} from '../dist/middlewares/index.js';
 import {appWith, test} from './fixtures.js';
 
 /* HELPERS */
@@ -25,6 +25,18 @@ const appBasicAuth = () => {
     }));
 
     app.get ( '/auth', ( req, res ) => res.text ( 'authorized' ) );
+
+  });
+
+};
+
+const appCors = () => {
+
+  return appWith ( app => {
+
+    app.use ( cors () );
+
+    app.get ( '/cors', ( req, res ) => res.text ( 'cors' ) );
 
   });
 
@@ -127,6 +139,29 @@ describe ( 'middlewares', it => {
 
   });
 
+  it ( 'cors', async t => {
+
+    //TODO: Test this way more expensively
+
+    await test ( t, appCors, '/cors', {
+      method: 'OPTIONS',
+      headers: {
+        'Origin': 'http://some.cross.origin',
+        'Access-Control-Request-Method': 'GET'
+      }
+    }, {
+      statusCode: 204,
+      text: '',
+      headers: {
+        'access-control-allow-headers': '',
+        'access-control-allow-methods': 'GET, HEAD, POST, PUT, DELETE, PATCH',
+        'access-control-allow-origin': '*',
+        vary: 'Access-Control-Request-Headers'
+      }
+    });
+
+  });
+
   it ( 'etag', async t => {
 
     await test ( t, appEtag, '/empty', {}, {
@@ -174,8 +209,5 @@ describe ( 'middlewares', it => {
     });
 
   });
-
-  // basic_auth
-  // cors
 
 });
