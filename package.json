@@ -23,6 +23,10 @@
     "./node": {
       "import": "./dist/adapters/node.js",
       "types": "./dist/adapters/node.d.ts"
+    },
+    "./middlewares": {
+      "import": "./dist/middlewares/index.js",
+      "types": "./dist/middlewares/index.d.ts"
     }
   },
   "typesVersions": {
@@ -35,6 +39,9 @@
       ],
       "node": [
         "./dist/adapters/node.d.ts"
+      ],
+      "middlewares": [
+        "./dist/middlewares/index.d.ts"
       ]
     }
   },
