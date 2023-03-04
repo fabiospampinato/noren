@@ -5,9 +5,11 @@ import type {RequestHandler} from '~/server/types';
 
 /* MAIN */
 
-const poweredBy: RequestHandler = () => {
+const poweredBy: RequestHandler = async ( req, res, next ) => {
 
-  throw new Error ( 'Unimplemented' ); //TODO
+  await next ();
+
+  res.header ( 'X-Powered-By', 'Noren' );
 
 };
 
