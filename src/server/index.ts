@@ -78,6 +78,8 @@ class Server extends Router<RequestHandler> {
 
           await exec ( handlers[i], req, res );
 
+          if ( res.finished ) break;
+
         }
 
       } else {
@@ -89,6 +91,8 @@ class Server extends Router<RequestHandler> {
         for ( let i = 0, l = handlers.length; i < l; i++ ) {
 
           await exec ( handlers[i], req, res );
+
+          if ( res.finished ) break;
 
         }
 

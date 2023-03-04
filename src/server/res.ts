@@ -15,6 +15,7 @@ class Res {
 
   /* VARIABLES */
 
+  finished: boolean;
   headers: Headers;
   log: Pioppo;
   statusCode: number;
@@ -24,6 +25,7 @@ class Res {
 
   constructor () {
 
+    this.finished = false;
     this.headers = new Headers ();
     this.log = Logger;
     this.statusCode = 500;
@@ -147,6 +149,14 @@ class Res {
   send ( value: Uint8Array | string ): this {
 
     this.body = value;
+
+    return this;
+
+  }
+
+  end (): this {
+
+    this.finished = true;
 
     return this;
 

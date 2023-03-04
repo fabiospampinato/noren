@@ -2,10 +2,33 @@
 /* IMPORT */
 
 import {describe} from 'fava';
-import {etag, poweredBy} from '../dist/middlewares/index.js';
+import {basicAuth, etag, poweredBy} from '../dist/middlewares/index.js';
 import {appWith, test} from './fixtures.js';
 
 /* HELPERS */
+
+const appBasicAuth = () => {
+
+  return appWith ( app => {
+
+    app.use ( basicAuth ({
+      users: [
+        {
+          username: 'userfoo',
+          password: 'passfoo'
+        },
+        {
+          username: 'userbar',
+          password: 'passbar'
+        }
+      ]
+    }));
+
+    app.get ( '/auth', ( req, res ) => res.text ( 'authorized' ) );
+
+  });
+
+};
 
 const appEtag = () => {
 
@@ -37,6 +60,72 @@ const appPoweredBy = () => {
 //TODO: Implement these
 
 describe ( 'middlewares', it => {
+
+  it ( 'basicAuth', async t => {
+
+    await test ( t, appBasicAuth, '/auth', {}, {
+      statusCode: 401,
+      text: 'Unauthorized',
+      headers: {
+        'www-authenticate': 'Basic realm="Protected Area"'
+      }
+    });
+
+    await test ( t, appBasicAuth, '/auth', {
+      headers: {
+        'Authorization': 'Basic dXNlcmZvbzpwYXNzZm9v' // userfoo:passfoo
+      }
+    }, {
+      statusCode: 200,
+      text: 'authorized'
+    });
+
+    await test ( t, appBasicAuth, '/auth', {
+      headers: {
+        'Authorization': 'Basic dXNlcmJhcjpwYXNzYmFy' // userbar:passbar
+      }
+    }, {
+      statusCode: 200,
+      text: 'authorized'
+    });
+
+    await test ( t, appBasicAuth, '/auth', {
+      headers: {
+        'Authorization': 'Basic dXNlcmJhejpwYXNzYmF6' // userbaz:passbaz
+      }
+    }, {
+      statusCode: 401,
+      text: 'Unauthorized',
+      headers: {
+        'www-authenticate': 'Basic realm="Protected Area"'
+      }
+    });
+
+    await test ( t, appBasicAuth, '/auth', {
+      headers: {
+        'Authorization': 'Basic dXNlcmZvbzpub25l' // userfoo:none
+      }
+    }, {
+      statusCode: 401,
+      text: 'Unauthorized',
+      headers: {
+        'www-authenticate': 'Basic realm="Protected Area"'
+      }
+    });
+
+    await test ( t, appBasicAuth, '/auth', {
+      headers: {
+        'Authorization': 'Basic dXNlcmJhcjpub25l' // userbar:none
+      }
+    }, {
+      statusCode: 401,
+      text: 'Unauthorized',
+      headers: {
+        'www-authenticate': 'Basic realm="Protected Area"'
+      }
+    });
+
+  });
 
   it ( 'etag', async t => {
 
