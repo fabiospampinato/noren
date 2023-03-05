@@ -51,11 +51,11 @@ class Server extends Router<RequestHandler> {
 
         });
 
-        const resultNext = await promise;
+        const finished = await promise;
 
         results.push ( result );
 
-        return !!resultNext;
+        return finished;
 
       }
 

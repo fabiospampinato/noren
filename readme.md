@@ -78,7 +78,7 @@ app.on ( ['POST', 'PUT'], ['/article/new', '/articles/new'], middleware1, middle
 
 // Supported path features
 
-app.get ( '/', handle ); // Root-only match
+app.get ( '/', handle ); // Root match
 app.get ( '/:param([0-9]+)', handle ); // Named parameter with custom regex
 app.get ( '/:param', handle ); // Named parameter
 app.get ( '/:user/:section?', handle ) // Optional named parameter
@@ -88,11 +88,11 @@ app.get ( '/a+b', handle ) // One-or-more modifier
 app.get ( '/a?b', handle ) // Zero-or-one modifier
 app.get ( '/some-(foo|bar)', handle ) // Alternation
 
-// Listening at a port
+// Listening on a port
 
 app.listen ( 4000 );
 
-// Get the used port -- useful when setting the prot to 0, which lets the OS pick a number
+// Get the used port -- useful when setting the port to 0, which lets the OS pick one
 
 app.port ();
 
@@ -190,7 +190,7 @@ const customMiddleware = () => {
     // Maybe do something before executing the other middlewares...
     await next (); // Waiting for the other middlewares to execute
     await next ( new Error () ); // Exiting immediately, unsuccessfully, with an error
-    await next ( true ); // Exiting immediately  d, successfully, skipping other middlewares
+    await next ( true ); // Exiting immediately, successfully, skipping other middlewares
     // Maybe do something after executing the other middlewares...
   };
 };
