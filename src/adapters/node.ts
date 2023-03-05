@@ -54,7 +54,7 @@ class NodeServer extends Server {
 
     for ( let i = 0, l = incoming.rawHeaders.length; i < l; i += 2 ) {
 
-      const key = incoming.rawHeaders[i].toLowerCase ();
+      const key = incoming.rawHeaders[i];
       const value = incoming.rawHeaders[i + 1];
 
       headers.push ([ key, value ]);
@@ -73,6 +73,7 @@ class NodeServer extends Server {
 
       const body = chunks;
       const options = { body, environment, headers, method, pathname, url };
+
       const req = new Req ( options );
       const res = new Res ();
 

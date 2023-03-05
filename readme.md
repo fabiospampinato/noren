@@ -109,7 +109,7 @@ The req object provides the following APIs:
 // Instance variables
 
 req.body; // Uint8Array containing the payload of the request
-req.cookies; // Object containing all detected cookies
+req.cookies; // Object containing all received cookies
 req.credentials; // Object containing username and password, if any
 req.environment; // Object containing environment variables
 req.headers; // Object containing all request headers
@@ -117,7 +117,7 @@ req.ip; // String containing the first "X-Forwared-For" address, if any
 req.ips; // Array containing all "X-Forwared-For" addresses
 req.method; // String of the HTTP verb used
 req.params; // Object containing path parameters
-req.pathname; // Get the pathname of the request
+req.pathname; // The requested pathname
 req.signal; // AbortSignal for the request, if any
 req.url; // URL object for the request
 
@@ -150,7 +150,7 @@ res.headers; // Object containing all current response headers
 res.statusCode; // Number representing the returned status code
 res.body; // String or Uint8Array containing the response payload, if any
 
-// Logging
+// Methods for logging, efficiently
 
 res.log.error ( 'Message' ); // Log an error-level message
 res.log.warn ( 'Message' ); // Log a warning-level message
