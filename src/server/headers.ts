@@ -11,15 +11,27 @@ class Headers {
 
   /* CONSTRUCTOR */
 
-  constructor ( entries?: readonly (readonly [string, string])[] ) {
+  constructor ( headers?: readonly (readonly [string, string])[] | globalThis.Headers ) {
 
-    if ( entries ) {
+    if ( headers ) {
 
-      for ( let i = 0, l = entries.length; i < l; i++ ) {
+      if ( Array.isArray ( headers) ) {
 
-        const [key, value] = entries[i];
+        for ( let i = 0, l = headers.length; i < l; i++ ) {
 
-        this.set ( key, value );
+          const [key, value] = headers[i];
+
+          this.set ( key, value );
+
+        }
+
+      } else {
+
+        headers.forEach ( ( value, key ) => {
+
+          this.set ( String ( key ), String ( value ) );
+
+        });
 
       }
 
