@@ -74,9 +74,7 @@ class Server extends Router<RequestHandler> {
 
         res.code ( 200 );
 
-        const params = route.params;
-
-        Object.assign ( req.params, params );
+        req.params = route.params;
 
         const handlers = route.route.handlers;
 
