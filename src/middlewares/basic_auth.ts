@@ -50,7 +50,7 @@ const basicAuth = ( options: { users: { username: string, password: string }[], 
     res.status ( 401 );
     res.header ( 'WWW-Authenticate', `Basic realm="${realm}"` );
 
-    next ( true );
+    await next ( true );
 
   };
 
