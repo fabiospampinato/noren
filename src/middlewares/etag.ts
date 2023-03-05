@@ -26,7 +26,7 @@ const etag = (): RequestHandler => {
 
   return async ( req, res, next ) => {
 
-    const ifNoneMatch = req.header ( 'if-none-match' );
+    const ifNoneMatch = req.header ( 'If-None-Match' );
 
     await next ();
 

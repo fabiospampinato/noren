@@ -15,7 +15,7 @@ const cors = (): RequestHandler => {
 
     if ( req.method === 'OPTIONS' ) {
 
-      const headers = req.header ( 'access-control-request-headers' ) || '';
+      const headers = req.header ( 'Access-Control-Request-Headers' ) || '';
 
       res.header ( 'Access-Control-Allow-Methods', 'GET, HEAD, POST, PUT, DELETE, PATCH' );
       res.header ( 'Access-Control-Allow-Headers', headers );

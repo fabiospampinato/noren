@@ -104,7 +104,7 @@ class Req {
 
   async formData (): Promise<FormData> {
 
-    const type = this.header ( 'content-type' ) || '';
+    const type = this.header ( 'Content-Type' ) || '';
 
     if ( type === 'application/x-www-form-urlencoded' ) {
 
