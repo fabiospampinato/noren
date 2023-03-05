@@ -4,6 +4,7 @@
 import ext2mime from 'ext2mime';
 import Cookie from '~/parsers/cookie';
 import {STATUS} from '~/server/constants';
+import Headers from '~/server/headers';
 import Logger from '~/server/logger';
 import {isString} from '~/server/utils';
 import type Pioppo from 'pioppo';

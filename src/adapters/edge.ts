@@ -27,7 +27,7 @@ class EdgeServer extends Server {
 
     return new Response ( res.body, {
       status: res.statusCode,
-      headers: res.headers
+      headers: res.headers.headers
     });
 
   }

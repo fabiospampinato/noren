@@ -45,7 +45,7 @@ class NodeServer extends Server {
   async fetch ( incoming: IncomingMessage, outgoing: ServerResponse ): Promise<void> {
 
     const environment = process.env;
-    const headers: Record<string, string> = {};
+    const headers: [string, string][] = [];
     const method = incoming.method?.toUpperCase () || '';
     const host = incoming.headers.host || '0.0.0.0';
     const pathname = ( incoming.url || '/' ).replace ( /^\/\/+/, '/' );
@@ -57,7 +57,7 @@ class NodeServer extends Server {
       const key = incoming.rawHeaders[i].toLowerCase ();
       const value = incoming.rawHeaders[i + 1];
 
-      headers[key] = value;
+      headers.push ([ key, value ]);
 
     }
 
@@ -78,15 +78,7 @@ class NodeServer extends Server {
 
       await this.handle ( req, res );
 
-      outgoing.statusCode = res.statusCode;
-
-      //TODO: use "outgoingMessage.setHeaders" eventually, but it requires Node v19
-
-      res.headers.forEach ( ( value, key ) => {
-
-        outgoing.setHeader ( key, value );
-
-      });
+      outgoing.writeHead ( res.statusCode, res.headers.headers );
 
       if ( res.body?.length ) {
 

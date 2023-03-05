@@ -5,6 +5,7 @@ import U8 from 'uint8-encoding';
 import Address from '~/parsers/address';
 import Cookie from '~/parsers/cookie';
 import Credentials from '~/parsers/credentials';
+import Headers from '~/server/headers';
 import {castArrayBuffer} from '~/server/utils';
 import type {JSONValue} from '~/server/types';
 
