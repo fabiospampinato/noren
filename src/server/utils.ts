@@ -27,9 +27,21 @@ const castError = ( exception: unknown ): Error => {
 
 };
 
+const isArray = ( value: unknown ): value is any[] => {
+
+  return Array.isArray ( value );
+
+};
+
 const isError = ( value: unknown ): value is Error => {
 
   return value instanceof Error;
+
+};
+
+const isFunction = ( value: unknown ): value is Function => {
+
+  return typeof value === 'function';
 
 };
 
@@ -39,6 +51,40 @@ const isString = ( value: unknown ): value is string => {
 
 };
 
+const Once = () => { //TODO: Write this better, perhaps
+
+  const once = <T> ( fn: (() => T) ): (() => T) => {
+
+    const symbol = Symbol ();
+
+    return function ( this: any ): T {
+
+      return this[symbol] ||= fn.call ( this );
+
+    };
+
+  };
+
+  return ( target: Object, key: string, descriptor: TypedPropertyDescriptor<any> ): any => {
+
+    if ( isFunction ( descriptor.value ) ) {
+
+      descriptor.value = once ( descriptor.value );
+
+    } else if ( isFunction ( descriptor.get ) ) {
+
+      descriptor.get = once ( descriptor.get );
+
+    } else {
+
+      throw new Error ( '@Once can only be called on methods and getters' );
+
+    }
+
+  };
+
+};
+
 /* EXPORT */
 
-export {castArrayBuffer, castError, isError, isString};
+export {castArrayBuffer, castError, isArray, isError, isString, Once};

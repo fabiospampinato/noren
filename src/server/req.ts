@@ -1,12 +1,13 @@
 
 /* IMPORT */
 
+import concat from 'uint8-concat';
 import U8 from 'uint8-encoding';
 import Address from '~/parsers/address';
 import Cookie from '~/parsers/cookie';
 import Credentials from '~/parsers/credentials';
 import Headers from '~/server/headers';
-import {castArrayBuffer} from '~/server/utils';
+import {castArrayBuffer, isArray, Once} from '~/server/utils';
 import type {JSONValue} from '~/server/types';
 
 /* MAIN */
@@ -15,34 +16,91 @@ class Req {
 
   /* VARIABLES */
 
-  readonly body: Uint8Array;
-  readonly cookies: Record<string, string | undefined>;
-  readonly credentials: { username: string, password: string } | undefined;
-  readonly environment: Record<string, string | undefined>;
-  readonly headers: Headers;
-  readonly ip: string | undefined;
-  readonly ips: string[];
-  readonly method: string;
-  readonly params: Record<string, string | undefined>;
-  readonly signal: AbortSignal | null;
-  readonly url: URL;
+  private _body?: Uint8Array | Uint8Array[];
+  private _headers?: [string, string][] | globalThis.Headers;
+  private _pathname?: string;
+  private _url: string;
+
+  environment: Record<string, string | undefined>;
+  method: string;
+  params: Record<string, string | undefined>;
+  signal: AbortSignal | null;
 
   /* CONSTRUCTOR */
 
-  constructor ( url: string, init: { body?: Uint8Array, environment?: Record<string, string | undefined>, headers?: HeadersInit, method?: string, signal?: AbortSignal | null } ) {
+  constructor ( options: { body?: Uint8Array | Uint8Array[], environment?: Record<string, string | undefined>, headers?: [string, string][] | globalThis.Headers, method?: string, pathname?: string, signal?: AbortSignal | null, url: string } ) {
 
-    this.body = init.body || new Uint8Array ( 0 );
-    this.environment = init.environment || {};
-    this.headers = new Headers ( init.headers );
-    this.method = init.method || '';
+    this._body = options.body;
+    this._headers = options.headers;
+    this._pathname = options.pathname;
+    this._url = options.url;
+
+    this.environment = options.environment || {};
+    this.method = options.method || '';
     this.params = {};
-    this.signal = init.signal || null;
-    this.url = new URL ( url );
+    this.signal = options.signal || null;
 
-    this.cookies = Cookie.parse ( this.headers.get ( 'cookie' ) || '' );
-    this.credentials = Credentials.parse ( this.headers.get ( 'authorization' ) || '' );
-    this.ips = Address.get ( this.headers.get ( 'x-forwarded-for' ) || '' );
-    this.ip = this.ips[0];
+  }
+
+  /* GETTER API */
+
+  @Once ()
+  get body (): Uint8Array {
+
+    if ( !this._body ) return new Uint8Array ( 0 );
+
+    if ( isArray ( this._body ) ) return concat ( this._body );
+
+    return this._body;
+
+  }
+
+  @Once ()
+  get cookies (): Record<string, string | undefined> {
+
+    return Cookie.parse ( this.headers.get ( 'Cookie' ) || '' );
+
+  }
+
+  @Once ()
+  get credentials (): { username: string, password: string } | undefined {
+
+    return Credentials.parse ( this.headers.get ( 'Authorization' ) || '' );
+
+  }
+
+  @Once ()
+  get headers (): Headers {
+
+    return new Headers ( this._headers );
+
+  }
+
+  @Once ()
+  get ip (): string | undefined {
+
+    return this.ips[0];
+
+  }
+
+  @Once ()
+  get ips (): string[] {
+
+    return Address.get ( this.headers.get ( 'X-Forwarded-For' ) || '' );
+
+  }
+
+  @Once ()
+  get pathname (): string {
+
+    return this._pathname || this.url.pathname;
+
+  }
+
+  @Once ()
+  get url (): URL {
+
+    return new URL ( this._url );
 
   }
 
@@ -86,6 +144,7 @@ class Req {
 
   /* BODY API */
 
+  @Once ()
   async arrayBuffer (): Promise<ArrayBuffer> {
 
     const arrayBuffer = castArrayBuffer ( this.body );
@@ -94,6 +153,7 @@ class Req {
 
   }
 
+  @Once ()
   async blob (): Promise<Blob> {
 
     const blob = new Blob ([ this.body ]);
@@ -102,6 +162,7 @@ class Req {
 
   }
 
+  @Once ()
   async formData (): Promise<FormData> {
 
     const type = this.header ( 'Content-Type' ) || '';
@@ -130,6 +191,7 @@ class Req {
 
   }
 
+  @Once ()
   async json (): Promise<JSONValue> {
 
     const text = await this.text ();
@@ -139,6 +201,7 @@ class Req {
 
   }
 
+  @Once ()
   async text (): Promise<string> {
 
     const text = U8.decode ( this.body );

@@ -62,7 +62,7 @@ class Server extends Router<RequestHandler> {
     }
 
     const method = req.method.toUpperCase ();
-    const pathname = decodeURIComponent ( req.url.pathname );
+    const pathname = decodeURIComponent ( req.pathname );
 
     try {
 

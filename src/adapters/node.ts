@@ -4,7 +4,6 @@
 import events from 'node:events';
 import {createServer} from 'node:http';
 import process from 'node:process';
-import concat from 'uint8-concat';
 import Server from '~/server';
 import Req from '~/server/req';
 import Res from '~/server/res';
@@ -48,8 +47,9 @@ class NodeServer extends Server {
     const headers: [string, string][] = [];
     const method = incoming.method?.toUpperCase () || '';
     const host = incoming.headers.host || '0.0.0.0';
-    const pathname = ( incoming.url || '/' ).replace ( /^\/\/+/, '/' );
-    const url = `http://${host}${pathname}`;
+    const path = ( incoming.url || '/' ).replace ( /^\/\/+/, '/' );
+    const pathname = path.replace ( /\?.*$/, '' );
+    const url = `http://${host}${path}`;
     const chunks: Buffer[] = [];
 
     for ( let i = 0, l = incoming.rawHeaders.length; i < l; i += 2 ) {
@@ -71,9 +71,9 @@ class NodeServer extends Server {
 
       if ( !incoming.complete ) return outgoing.end (); // Aborted
 
-      const body = concat ( chunks );
-      const init = { body, environment, headers, method };
-      const req = new Req ( url, init );
+      const body = chunks;
+      const options = { body, environment, headers, method, pathname, url };
+      const req = new Req ( options );
       const res = new Res ();
 
       await this.handle ( req, res );

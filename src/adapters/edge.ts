@@ -18,9 +18,9 @@ class EdgeServer extends Server {
     const headers = request.headers;
     const method = request.method;
     const url = request.url;
-    const init = { body, headers, method };
+    const options = { body, headers, method, url };
 
-    const req = new Req ( url, init );
+    const req = new Req ( options );
     const res = new Res ();
 
     await this.handle ( req, res );

@@ -117,6 +117,7 @@ req.ip; // String containing the first "X-Forwared-For" address, if any
 req.ips; // Array containing all "X-Forwared-For" addresses
 req.method; // String of the HTTP verb used
 req.params; // Object containing path parameters
+req.pathname; // Get the pathname of the request
 req.signal; // AbortSignal for the request, if any
 req.url; // URL object for the request
 
@@ -174,7 +175,7 @@ res.text ( value ); // Set a plain string as the response body, with proper MIME
 res.send ( value ); // Set a string or Uint8Array as the response body, with no automatic MIME type
 ```
 
-## Middleware
+### Middlewares
 
 Middlewares are used like this:
 
