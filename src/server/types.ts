@@ -19,7 +19,7 @@ type ErrorHandler = {
 };
 
 type RequestHandler = {
-  ( req: Req, res: Res, next: ( error?: unknown ) => Promise<void> ): PromiseMaybe<void>
+  ( req: Req, res: Res, next: ( errorOrDone?: true |unknown ) => Promise<void> ): PromiseMaybe<void>
 };
 
 /* EXPORT */

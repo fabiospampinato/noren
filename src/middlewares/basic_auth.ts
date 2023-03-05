@@ -11,7 +11,7 @@ const basicAuth = ( options: { users: { username: string, password: string }[], 
   const users = new Map<string, string> ();
   const realm = options.realm || 'Protected Area';
 
-  return async ( req, res ) => {
+  return async ( req, res, next ) => {
 
     if ( !users.size ) { // Initing the users map //TODO: This should really be outside of the middleware though...
 
@@ -39,7 +39,7 @@ const basicAuth = ( options: { users: { username: string, password: string }[], 
 
         if ( hash1 === hash2 ) {
 
-          return; // Authorized
+          return next (); // Authorized
 
         }
 
@@ -49,7 +49,8 @@ const basicAuth = ( options: { users: { username: string, password: string }[], 
 
     res.status ( 401 );
     res.header ( 'WWW-Authenticate', `Basic realm="${realm}"` );
-    res.end ();
+
+    next ( true );
 
   };
 

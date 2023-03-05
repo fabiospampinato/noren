@@ -9,7 +9,7 @@ import type {RequestHandler} from '~/server/types';
 
 const cors = (): RequestHandler => {
 
-  return ( req, res ) => {
+  return ( req, res, next ) => {
 
     res.header ( 'Access-Control-Allow-Origin', '*' );
 
@@ -23,9 +23,11 @@ const cors = (): RequestHandler => {
 
       res.status ( 204 );
 
-      res.end ();
+      return next ( true );
 
     }
+
+    next ();
 
   };
 

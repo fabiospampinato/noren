@@ -145,7 +145,6 @@ The res object provides the following APIs:
 ```ts
 // Instance variables
 
-res.finished; // Whether the request was ended early, potentially skipping some middlewares
 res.headers; // Object containing all current response headers
 res.statusCode; // Number representing the returned status code
 res.body; // String or Uint8Array containing the response payload, if any
@@ -173,10 +172,6 @@ res.html ( value ); // Set an HTML string as the response body, with proper MIME
 res.json ( value ); // Set a JSON value as the response body, with proper MIME type
 res.text ( value ); // Set a plain string as the response body, with proper MIME type
 res.send ( value ); // Set a string or Uint8Array as the response body, with no automatic MIME type
-
-// Other methods
-
-res.end (); // Signal that the request has been handled, skipping execution of any eventual other middlewares
 ```
 
 ## Middleware
@@ -192,9 +187,11 @@ const app = new Server ();
 
 const customMiddleware = () => {
   return async ( req, res, next ) => {
-    // Maybe do something before going onto the next middleware...
-    await next ();
-    // Maybe do something after all other middlewares executed...
+    // Maybe do something before executing the other middlewares...
+    await next (); // Waiting for the other middlewares to execute
+    await next ( new Error () ); // Exiting immediately, unsuccessfully, with an error
+    await next ( true ); // Exiting immediately  d, successfully, skipping other middlewares
+    // Maybe do something after executing the other middlewares...
   };
 };
 
