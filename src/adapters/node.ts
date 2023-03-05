@@ -10,6 +10,7 @@ import Req from '~/server/req';
 import Res from '~/server/res';
 import {isString} from '~/server/utils';
 import type {IncomingMessage, Server as HTTPServer, ServerResponse} from 'node:http';
+import type {ErrorHandler, RequestHandler} from '~/server/types';
 
 /* MAIN */
 
@@ -129,3 +130,4 @@ class NodeServer extends Server {
 
 export default NodeServer;
 export {Req, Res};
+export type {ErrorHandler, RequestHandler};
