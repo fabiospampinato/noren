@@ -1,9 +1,9 @@
 
 /* IMPORT */
 
-import ext2mime from 'ext2mime';
 import Cookie from '~/parsers/cookie';
 import {STATUS} from '~/server/constants';
+import ContentType from '~/parsers/content_type';
 import Headers from '~/server/headers';
 import Logger from '~/server/logger';
 import {isString} from '~/server/utils';
@@ -107,11 +107,9 @@ class Res {
 
   type ( type: string ): this {
 
-    const mime = type.includes ( '/' ) ? type : ext2mime ( type );
-    const charset = ( mime.startsWith ( 'text' ) || mime === 'application/json' ) ? '; charset=UTF8' : '';
-    const value = `${mime}${charset}`;
+    const contentType = ContentType.get ( type );
 
-    this.headers.set ( 'Content-Type', value );
+    this.headers.set ( 'Content-Type', contentType );
 
     return this;
 

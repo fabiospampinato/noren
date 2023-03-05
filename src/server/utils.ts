@@ -51,6 +51,26 @@ const isString = ( value: unknown ): value is string => {
 
 };
 
+const memoize = <T, U> ( fn: (( arg: T ) => U) ): (( arg: T ) => U) => {
+
+  const cache = new Map<T, U> ();
+
+  return ( arg: T ): U => {
+
+    const cached = cache.get ( arg );
+
+    if ( cached ) return cached;
+
+    const result = fn ( arg );
+
+    cache.set ( arg, result );
+
+    return result;
+
+  };
+
+};
+
 const Once = () => { //TODO: Write this better, perhaps
 
   const once = <T> ( fn: (() => T) ): (() => T) => {
@@ -87,4 +107,4 @@ const Once = () => { //TODO: Write this better, perhaps
 
 /* EXPORT */
 
-export {castArrayBuffer, castError, isArray, isError, isString, Once};
+export {castArrayBuffer, castError, isArray, isError, isString, memoize, Once};
