@@ -95,9 +95,14 @@ class NodeServer extends Server {
 
   }
 
-  listen ( port: number = 3000, hostname: string = '0.0.0.0' ): this {
+  listen ( port: number, callback?: () => void ): this;
+  listen ( port: number, hostname: string, callback?: () => void ): this;
+  listen ( port: number = 3000, hostnameOrCallback?: string | (() => void), callback?: () => void ): this {
 
-    this.server.listen ( port, hostname );
+    const hostname = isString ( hostnameOrCallback ) ? hostnameOrCallback : '0.0.0.0';
+    const cb = isString ( hostnameOrCallback ) ? callback : hostnameOrCallback || callback;
+
+    this.server.listen ( port, hostname, cb );
 
     return this;
 
