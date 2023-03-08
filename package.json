@@ -27,6 +27,10 @@
     "./middlewares": {
       "import": "./dist/middlewares/index.js",
       "types": "./dist/middlewares/index.d.ts"
+    },
+    "./router": {
+      "import": "./dist/router/index.js",
+      "types": "./dist/router/index.d.ts"
     }
   },
   "typesVersions": {
@@ -42,6 +46,9 @@
       ],
       "middlewares": [
         "./dist/middlewares/index.d.ts"
+      ],
+      "router": [
+        "./dist/router/index.d.ts"
       ]
     }
   },

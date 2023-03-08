@@ -29,6 +29,7 @@ Noren is divided into 4 main objects:
 The server provides the following APIs:
 
 ```ts
+// import Router from 'noren/router'' // Import just the low-level router
 // import Server, {Req, Res} from 'noren/abstract'; // To write your own adapter
 // import Server from 'noren/edge'; // The built-in Edge adapter
 import Server from 'noren/node'; // The built-in Node adapter
