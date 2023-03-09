@@ -45,6 +45,12 @@ const isFunction = ( value: unknown ): value is Function => {
 
 };
 
+const isStream = ( value: unknown ): value is ReadableStream => {
+
+  return value instanceof ReadableStream;
+
+};
+
 const isString = ( value: unknown ): value is string => {
 
   return typeof value === 'string';
@@ -107,4 +113,4 @@ const Once = () => { //TODO: Write this better, perhaps
 
 /* EXPORT */
 
-export {castArrayBuffer, castError, isArray, isError, isString, memoize, Once};
+export {castArrayBuffer, castError, isArray, isError, isStream, isString, memoize, Once};

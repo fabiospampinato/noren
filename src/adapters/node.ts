@@ -4,11 +4,13 @@
 import events from 'node:events';
 import {createServer} from 'node:http';
 import process from 'node:process';
+import {Readable} from 'node:stream';
 import Server from '~/server';
 import Req from '~/server/req';
 import Res from '~/server/res';
-import {isString} from '~/server/utils';
+import {isStream, isString} from '~/server/utils';
 import type {IncomingMessage, Server as HTTPServer, ServerResponse} from 'node:http';
+import type {ReadableStream} from 'node:stream/web';
 import type {ErrorHandler, RequestHandler} from '~/server/types';
 
 /* MAIN */
@@ -81,7 +83,11 @@ class NodeServer extends Server {
 
       outgoing.writeHead ( res.statusCode, res.headers.headers );
 
-      if ( res.body?.length ) {
+      if ( isStream ( res.body ) ) {
+
+        Readable.fromWeb ( res.body as ReadableStream ).pipe ( outgoing ); //TSC
+
+      } else if ( res.body?.length ) {
 
         outgoing.end ( res.body );
 

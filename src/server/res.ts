@@ -20,7 +20,7 @@ class Res {
   headers: Headers;
   log: Pioppo;
   statusCode: number;
-  body?: Uint8Array | string;
+  body?: ReadableStream | Uint8Array | string;
 
   /* CONSTRUCTOR */
 
@@ -144,7 +144,7 @@ class Res {
 
   }
 
-  send ( value: Uint8Array | string ): this {
+  send ( value: ReadableStream | Uint8Array | string ): this {
 
     this.body = value;
 
