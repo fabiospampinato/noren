@@ -1,9 +1,8 @@
 
 /* IMPORT */
 
-import fs from 'node:fs';
+import fs from 'node:fs/promises';
 import path from 'node:path';
-import {Readable} from 'node:stream';
 import ContentType from '~/parsers/content_type';
 import type {RequestHandler} from '~/server/types';
 
@@ -79,7 +78,7 @@ const serveStatic = ( root: string, options: ServeOptions = {} ): RequestHandler
 
       try {
 
-        const stat = await fs.promises.stat ( filePath );
+        const stat = await fs.stat ( filePath );
 
         if ( stat.isFile () ) {
 
@@ -96,14 +95,14 @@ const serveStatic = ( root: string, options: ServeOptions = {} ): RequestHandler
 
             if ( isGet ) {
 
-              const stream = Readable.toWeb ( fs.createReadStream ( filePath ) ) as ReadableStream; //TSC
-              const ext = path.extname ( filePath );
-              const type = ext ? ContentType.get ( ext ) : 'application/octet-stream';
+              const fileContent = await fs.readFile ( filePath );
+              const fileExt = path.extname ( filePath );
+              const type = fileExt ? ContentType.get ( fileExt ) : 'application/octet-stream';
 
               res.code ( 200 );
               res.header ( 'Content-Type', type );
               res.header ( 'Cache-Control', `public, max-age=${maxAge}${immutable ? ', immutable' : ''}` );
-              res.send ( stream );
+              res.send ( fileContent );
 
             }
 
