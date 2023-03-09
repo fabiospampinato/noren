@@ -211,7 +211,7 @@ app.get ( '/foo', customMiddleware (), ( req, res ) => {
 The following built-in middlewares are provided:
 
 ```ts
-import {basicAuth, cors, etag, logger, poweredBy} from 'noren/middlewares';
+import {basicAuth, cors, etag, logger, poweredBy, serveStatic} from 'noren/middlewares';
 import Server from 'noren/node';
 
 const app = new Server ();
@@ -246,6 +246,15 @@ app.use ( logger () );
 // Add the X-Powered-By header, with "Noren" as the value, to every response
 
 app.use ( poweredBy () );
+
+// Serve static files from a folder (this middleware is pretty basic, not intended for production use)
+
+app.use ( serveStatic ( '/public', {
+  dotfiles: true, // Serve dot files, and files in dot folders, also
+  fallback: true, // Pass the request to the next middleware instead of failing if the file is not found
+  immutable: true, // Mark the returned response as immutable
+  maxAge: 1000 // Set the "Cache-Control" header to "max-age=1000"
+}));
 ```
 
 ## License

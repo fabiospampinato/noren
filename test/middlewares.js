@@ -2,7 +2,10 @@
 /* IMPORT */
 
 import {describe} from 'fava';
-import {basicAuth, cors, etag, poweredBy} from '../dist/middlewares/index.js';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import process from 'node:process';
+import {basicAuth, cors, etag, poweredBy, serveStatic} from '../dist/middlewares/index.js';
 import {appWith, test} from './fixtures.js';
 
 /* HELPERS */
@@ -62,6 +65,18 @@ const appPoweredBy = () => {
     app.use ( poweredBy () );
 
     app.get ( '*', () => {} );
+
+  });
+
+};
+
+const appServeStatic = () => {
+
+  return appWith ( app => {
+
+    app.use ( serveStatic ( process.cwd (), { dotfiles: false, fallback: true, immutable: true, maxAge: 1000 } ) );
+
+    app.get ( '/fallback', ( req, res ) => res.text ( 'fallback' ) );
 
   });
 
@@ -204,6 +219,84 @@ describe ( 'middlewares', it => {
       headers: {
         'x-powered-by': 'Noren'
       }
+    });
+
+  });
+
+  it ( 'serveStatic', async t => {
+
+    const filePath = path.join ( process.cwd (), 'readme.md' );
+    const fileContent = await fs.readFile ( filePath, 'utf8' );
+    const fileStat = await fs.stat ( filePath );
+
+    await test ( t, appServeStatic, '/readme.md', { method: 'HEAD' }, {
+      statusCode: 200,
+      text: '',
+      headers: {
+        'content-length': String ( fileStat.size ),
+        'last-modified': fileStat.mtime.toUTCString ()
+      }
+    });
+
+    await test ( t, appServeStatic, '/readme2.md', { method: 'HEAD' }, {
+      statusCode: 404,
+      text: ''
+    });
+
+    await test ( t, appServeStatic, '/.gitignore', { method: 'HEAD' }, {
+      statusCode: 404,
+      text: ''
+    });
+
+    await test ( t, appServeStatic, '/fallback', { method: 'HEAD' }, {
+      statusCode: 404,
+      text: ''
+    });
+
+    await test ( t, appServeStatic, '/readme.md', { method: 'GET' }, {
+      statusCode: 200,
+      text: fileContent,
+      headers: {
+        'content-length': String ( fileStat.size ),
+        'last-modified': fileStat.mtime.toUTCString (),
+        'content-type': 'text/markdown; charset=UTF8',
+        'cache-control': 'public, max-age=1000'
+      }
+    });
+
+    await test ( t, appServeStatic, '/readme2.md', { method: 'GET' }, {
+      statusCode: 404,
+      text: 'Not Found'
+    });
+
+    await test ( t, appServeStatic, '/.gitignore', { method: 'GET' }, {
+      statusCode: 404,
+      text: 'Not Found'
+    });
+
+    await test ( t, appServeStatic, '/fallback', { method: 'GET' }, {
+      statusCode: 200,
+      text: 'fallback'
+    });
+
+    await test ( t, appServeStatic, '/readme.md', { method: 'POST' }, {
+      statusCode: 404,
+      text: 'Not Found'
+    });
+
+    await test ( t, appServeStatic, '/readme2.md', { method: 'POST' }, {
+      statusCode: 404,
+      text: 'Not Found'
+    });
+
+    await test ( t, appServeStatic, '/.gitignore', { method: 'POST' }, {
+      statusCode: 404,
+      text: 'Not Found'
+    });
+
+    await test ( t, appServeStatic, '/fallback', { method: 'POST' }, {
+      statusCode: 404,
+      text: 'Not Found'
     });
 
   });
