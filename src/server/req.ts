@@ -91,7 +91,7 @@ class Req {
   }
 
   @Once ()
-  get pathname (): string {
+  get path (): string {
 
     return this._pathname || this.url.pathname;
 

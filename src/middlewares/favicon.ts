@@ -31,7 +31,7 @@ const favicon = ( favicon: Uint8Array | string, options: FaviconOptions = {} ): 
 
     if ( !isGet && !isHead ) return next ();
 
-    if ( req.pathname !== '/favicon.ico' ) return next ();
+    if ( req.path !== '/favicon.ico' ) return next ();
 
     if ( isHead ) {
 

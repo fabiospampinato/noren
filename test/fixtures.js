@@ -13,7 +13,7 @@ const appWith = ( fn ) => {
 
   const open = () => server.listen ( 0 );
   const close = () => server.close ();
-  const fetch = async ( pathname, options ) => globalThis.fetch ( `http://0.0.0.0:${await server.port ()}/${pathname}`, options );
+  const fetch = async ( path, options ) => globalThis.fetch ( `http://0.0.0.0:${await server.port ()}/${path}`, options );
 
   return {server, open, close, fetch};
 

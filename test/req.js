@@ -191,6 +191,16 @@ describe ( 'Req', it => {
 
   });
 
+  it ( 'can read the path', async t => {
+
+    await test ( t, app, '/foo/bar?param', {}, req => {
+
+      t.is ( req.path, '/foo/bar' );
+
+    });
+
+  });
+
   it ( 'can read the signal', async t => {
 
     //TODO: Test an actual signal also

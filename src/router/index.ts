@@ -39,7 +39,7 @@ class Router<T> {
 
   }
 
-  route ( method: string, pathname: string ): { params: Params, route: Route<T> } | undefined {
+  route ( method: string, path: string ): { params: Params, route: Route<T> } | undefined {
 
     method = method.toUpperCase ();
 
@@ -53,7 +53,7 @@ class Router<T> {
 
       for ( let pi = 0, pl = route.pathsRe.length; pi < pl; pi++ ) {
 
-        const match = route.pathsRe[pi].exec ( pathname );
+        const match = route.pathsRe[pi].exec ( path );
 
         if ( !match ) continue;
 
