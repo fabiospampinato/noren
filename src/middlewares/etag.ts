@@ -5,9 +5,39 @@ import {sha1} from 'crypto-sha';
 import {isStream} from '~/server/utils';
 import type {RequestHandler} from '~/server/types';
 
-/* HELPERS */
+/* MAIN */
 
-const getHash = ( value?: ReadableStream | Uint8Array | string ): Promise<string> | string | undefined => {
+const etag = (): RequestHandler => {
+
+  return async ( req, res, next ) => {
+
+    const ifNoneMatch = req.header ( 'If-None-Match' );
+
+    await next ();
+
+    const hash = await etag.hash ( res.body );
+
+    if ( !hash ) return;
+
+    const entity = `"${hash}"`;
+
+    if ( ifNoneMatch === entity ) {
+
+      res.status ( 304 );
+
+    } else {
+
+      res.header ( 'ETag', entity );
+
+    }
+
+  };
+
+};
+
+/* UTILS */
+
+etag.hash = ( value?: ReadableStream | Uint8Array | string ): Promise<string> | string | undefined => {
 
   if ( isStream ( value ) ) { // Stream path, problematic
 
@@ -22,36 +52,6 @@ const getHash = ( value?: ReadableStream | Uint8Array | string ): Promise<string
     return sha1 ( value );
 
   }
-
-};
-
-/* MAIN */
-
-const etag = (): RequestHandler => {
-
-  return async ( req, res, next ) => {
-
-    const ifNoneMatch = req.header ( 'If-None-Match' );
-
-    await next ();
-
-    const hash = await getHash ( res.body );
-
-    if ( !hash ) return;
-
-    const etag = `"${hash}"`;
-
-    if ( ifNoneMatch === etag ) {
-
-      res.status ( 304 );
-
-    } else {
-
-      res.header ( 'ETag', etag );
-
-    }
-
-  };
 
 };
 
