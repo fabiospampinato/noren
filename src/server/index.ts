@@ -58,6 +58,8 @@ class Server extends Router<RequestHandler> {
 
         });
 
+        if ( res.ended ) resolve ( true );
+
         const finished = await promise;
 
         results.push ( result );
