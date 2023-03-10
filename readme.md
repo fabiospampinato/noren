@@ -211,7 +211,7 @@ app.get ( '/foo', customMiddleware (), ( req, res ) => {
 The following built-in middlewares are provided:
 
 ```ts
-import {basicAuth, cors, etag, logger, poweredBy, serveStatic} from 'noren/middlewares';
+import {basicAuth, cors, etag, favicon, logger, poweredBy, serveStatic} from 'noren/middlewares';
 import Server from 'noren/node';
 
 const app = new Server ();
@@ -238,6 +238,10 @@ app.use ( cors () );
 // Returning ETag headers, only strong etags are supported, which are somewhat expensive to generate
 
 app.use ( etag () );
+
+// Serve requests for "/favicon.ico" quickly from memory
+
+app.use ( favicon ( './public/favicon.ico' ) );
 
 // Log requests to the console, with very little overhead
 

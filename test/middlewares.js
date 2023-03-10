@@ -5,7 +5,7 @@ import {describe} from 'fava';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
-import {basicAuth, cors, etag, poweredBy, serveStatic} from '../dist/middlewares/index.js';
+import {basicAuth, cors, etag, favicon, poweredBy, serveStatic} from '../dist/middlewares/index.js';
 import {appWith, test} from './fixtures.js';
 
 /* HELPERS */
@@ -53,6 +53,18 @@ const appEtag = () => {
 
     app.get ( '/empty', () => {} );
     app.get ( '/hello', ( req, res ) => res.text ( 'Hello!' ) );
+
+  });
+
+};
+
+const appFavicon = () => {
+
+  return appWith ( app => {
+
+    app.use ( favicon ( './license', { immutable: true, maxAge: 1000 } ) );
+
+    app.post ( '/favicon.ico', ( req, res ) => res.text ( 'favicon' ) );
 
   });
 
@@ -209,6 +221,39 @@ describe ( 'middlewares', it => {
     }, {
       statusCode: 304,
       text: ''
+    });
+
+  });
+
+  it ( 'favicon', async t => {
+
+    const filePath = path.join ( process.cwd (), 'license' );
+    const fileContent = await fs.readFile ( filePath, 'utf8' );
+    const fileStat = await fs.stat ( filePath );
+    const fileHash = await etag.hash ( fileContent );
+    const fileEtag = `"${fileHash}"`;
+
+    await test ( t, appFavicon, '/favicon.ico', { method: 'HEAD' }, {
+      statusCode: 200,
+      text: '',
+      headers: {
+        'content-length': String ( fileStat.size )
+      }
+    });
+
+    await test ( t, appFavicon, '/favicon.ico', { method: 'GET' }, {
+      statusCode: 200,
+      text: fileContent,
+      headers: {
+        'content-type': 'image/x-icon',
+        'cache-control': 'public, max-age=1000, immutable',
+        'etag': fileEtag
+      }
+    });
+
+    await test ( t, appFavicon, '/favicon.ico', { method: 'POST' }, {
+      statusCode: 200,
+      text: 'favicon'
     });
 
   });
