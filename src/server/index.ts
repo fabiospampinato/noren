@@ -6,7 +6,6 @@ import Router from '~/router';
 import {castError} from '~/server/utils';
 import type Req from '~/server/req';
 import type Res from '~/server/res';
-import type {Head} from '~/server/types';
 import type {ErrorHandler, RequestHandler} from '~/server/types';
 
 /* MAIN */
@@ -29,15 +28,23 @@ class Server extends Router<RequestHandler> {
     const {promise: done, resolve: resolveDone} = makeNakedPromise<void> ();
     const results: unknown[] = [];
 
-    async function exec ( handler: ErrorHandler, ...args: Head<Parameters<ErrorHandler>> ): Promise<boolean>;
-    async function exec ( handler: RequestHandler, ...args: Head<Parameters<RequestHandler>> ): Promise<boolean>;
-    async function exec ( handler: any, ...args: unknown[] ): Promise<boolean> { //TSC
+    async function exec ( handler: ErrorHandler, args: [Req, Res] | [Req, Res, Error] ): Promise<boolean>;
+    async function exec ( handler: RequestHandler, args: [Req, Res] | [Req, Res, Error] ): Promise<boolean>;
+    async function exec ( handler: any, args: [Req, Res] | [Req, Res, Error] ): Promise<boolean> { //TSC
 
       if ( handler.length <= args.length ) { // Implicit "next" behavior, assuming this is the last handler
 
-        await handler ( ...args );
+        if ( args.length === 3 ) { // Error handler
 
-        return false;
+          await handler ( args[2], args[0], args[1] );
+
+        } else { // Request handler
+
+          await handler ( args[0], args[1] );
+
+        }
+
+        return res.ended || false;
 
       } else { // Explicit "next" behavior, assuming this is a middleware
 
@@ -55,7 +62,7 @@ class Server extends Router<RequestHandler> {
 
         results.push ( result );
 
-        return finished;
+        return res.ended || finished;
 
       }
 
@@ -80,7 +87,7 @@ class Server extends Router<RequestHandler> {
 
         for ( let i = 0, l = handlers.length; i < l; i++ ) {
 
-          finished = await exec ( handlers[i], req, res );
+          finished = await exec ( handlers[i], [req, res] );
 
           if ( finished ) break;
 
@@ -94,7 +101,7 @@ class Server extends Router<RequestHandler> {
 
         for ( let i = 0, l = handlers.length; i < l; i++ ) {
 
-          finished = await exec ( handlers[i], req, res );
+          finished = await exec ( handlers[i], [req, res] );
 
           if ( finished ) break;
 
@@ -104,7 +111,7 @@ class Server extends Router<RequestHandler> {
 
           if ( this.notFoundHandler ) {
 
-            await exec ( this.notFoundHandler, req, res );
+            await exec ( this.notFoundHandler, [req, res] );
 
           } else {
 
@@ -126,7 +133,7 @@ class Server extends Router<RequestHandler> {
 
           const error = castError ( exception );
 
-          await exec ( this.errorHandler, error, req, res );
+          await exec ( this.errorHandler, [req, res, error] );
 
         } catch ( exception: unknown ) {
 

@@ -280,4 +280,21 @@ describe ( 'Res', it => {
 
   });
 
+  it ( 'can end a request early with .end', async t => {
+
+    await test ( t, app, '/', {}, ( req, res, next ) => {
+
+      t.is ( res.ended, false );
+
+      res.status ( 200 );
+      res.end ();
+
+      t.is ( res.statusCode, 200 );
+      t.is ( res.body, 'OK' );
+      t.is ( res.ended, true );
+
+    });
+
+  });
+
 });

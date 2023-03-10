@@ -17,6 +17,7 @@ class Res {
 
   /* VARIABLES */
 
+  ended: boolean;
   headers: Headers;
   log: Pioppo;
   statusCode: number;
@@ -26,6 +27,7 @@ class Res {
 
   constructor () {
 
+    this.ended = false;
     this.headers = new Headers ();
     this.log = Logger;
     this.statusCode = 500;
@@ -147,6 +149,16 @@ class Res {
   send ( value: ReadableStream | Uint8Array | string ): this {
 
     this.body = value;
+
+    return this;
+
+  }
+
+  /* OTHER API */
+
+  end (): this {
+
+    this.ended = true;
 
     return this;
 
