@@ -3,6 +3,7 @@
 
 import {describe} from 'fava';
 import {METHODS} from '../dist/router/constants.js';
+import Router from '../dist/router/index.js';
 import {appWith, test} from './fixtures.js';
 
 /* HELPERS */
@@ -210,6 +211,20 @@ describe ( 'Router', it => {
     await test ( t, app, '/multi-2', { method: 'GET' }, { text: 'multi' } );
     await test ( t, app, '/multi-2', { method: 'POST' }, { text: 'multi' } );
     await test ( t, app, '/multi-2', { method: 'PUT' }, { text: 'multi' } );
+
+  });
+
+  it ( 'supports normalizing paths', async t => {
+
+    const router = new Router ();
+    const handler = () => {};
+
+    router.get ( '/normalized', handler );
+
+    t.is ( router.route ( 'GET', '/normalized' ).route.handlers[0], handler );
+    t.is ( router.route ( 'GET', '/normalized?foo' ).route.handlers[0], handler );
+    t.is ( router.route ( 'GET', '/normalized#foo' ).route.handlers[0], handler );
+    t.is ( router.route ( 'GET', '/normalized?foo#foo' ).route.handlers[0], handler );
 
   });
 

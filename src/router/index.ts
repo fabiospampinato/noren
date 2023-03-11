@@ -45,6 +45,8 @@ class Router<T> {
 
     if ( !isMethod ( method ) ) return;
 
+    path = path.replace ( /[?#].*/, '' );
+
     for ( let i = 0, l = this.routes.length; i < l; i++ ) {
 
       const route = this.routes[i];
