@@ -2,7 +2,7 @@
   "name": "noren",
   "repository": "github:fabiospampinato/noren",
   "description": "A minimal HTTP server with good developer-experience and performance, for Node and beyond.",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "type": "module",
   "main": "dist/index.js",
   "types": "./dist/index.d.ts",
