@@ -45,6 +45,12 @@ const isFunction = ( value: unknown ): value is Function => {
 
 };
 
+const isPromise = ( value: unknown ): value is Promise<unknown> => {
+
+  return value instanceof Promise;
+
+};
+
 const isStream = ( value: unknown ): value is ReadableStream => {
 
   return value instanceof ReadableStream;
@@ -113,4 +119,4 @@ const Once = () => { //TODO: Write this better, perhaps
 
 /* EXPORT */
 
-export {castArrayBuffer, castError, isArray, isError, isStream, isString, memoize, Once};
+export {castArrayBuffer, castError, isArray, isError, isFunction, isPromise, isStream, isString, memoize, Once};

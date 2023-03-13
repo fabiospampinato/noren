@@ -3,7 +3,7 @@
 
 import makeNakedPromise from 'promise-make-naked';
 import Router from '~/router';
-import {castError} from '~/server/utils';
+import {castError, isPromise} from '~/server/utils';
 import type Req from '~/server/req';
 import type Res from '~/server/res';
 import type {ErrorHandler, RequestHandler} from '~/server/types';
@@ -59,6 +59,8 @@ class Server extends Router<RequestHandler> {
         });
 
         if ( res.ended ) resolve ( true );
+
+        if ( isPromise ( result ) ) result.finally ( () => res.ended && resolve ( true ) );
 
         const finished = await promise;
 

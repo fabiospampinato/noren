@@ -2,6 +2,7 @@
 /* IMPORT */
 
 import {describe} from 'fava';
+import {setTimeout as delay} from 'node:timers/promises';
 import U8 from 'uint8-encoding';
 import {STATUS} from '../dist/server/constants.js';
 import {appWith, test} from './fixtures.js';
@@ -280,9 +281,28 @@ describe ( 'Res', it => {
 
   });
 
-  it ( 'can end a request early with .end', async t => {
+  it ( 'can end a request early with .end, from a sync middleware', async t => {
 
     await test ( t, app, '/', {}, ( req, res, next ) => {
+
+      t.is ( res.ended, false );
+
+      res.status ( 200 );
+      res.end ();
+
+      t.is ( res.statusCode, 200 );
+      t.is ( res.body, 'OK' );
+      t.is ( res.ended, true );
+
+    });
+
+  });
+
+  it ( 'can end a request early with .end, from an async middleware', async t => {
+
+    await test ( t, app, '/', {}, async ( req, res, next ) => {
+
+      await delay ( 100 );
 
       t.is ( res.ended, false );
 
