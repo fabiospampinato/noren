@@ -72,7 +72,7 @@
   "dependencies": {
     "crypto-sha": "^2.0.1",
     "ext2mime": "^2.0.0",
-    "grammex": "^1.2.1",
+    "grammex": "^2.0.0",
     "pioppo": "^1.1.0",
     "promise-make-naked": "^2.0.0",
     "radix64-encoding": "^2.0.1",
@@ -80,9 +80,9 @@
     "uint8-encoding": "^2.0.0"
   },
   "devDependencies": {
-    "@types/node": "^18.14.6",
+    "@types/node": "^20.4.4",
     "fava": "^0.2.0",
-    "tsex": "^2.2.2",
+    "tsex": "^2.2.4",
     "typescript": "^4.9.5"
   }
 }
