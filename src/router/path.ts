@@ -24,7 +24,7 @@ const Grammar = star ( or ([ ParameterWithRegex, Parameter, Escaped, Wildcard, M
 
 const compile = ( input: string, caseSensitive: boolean ): RegExp => {
 
-  const source = parse ( input, Grammar, null ).join ( '' );
+  const source = parse ( input, Grammar, { memoization: false } ).join ( '' );
   const flags = caseSensitive ? '' : 'i';
 
   return new RegExp ( `^(?:${source})/*$`, flags );
