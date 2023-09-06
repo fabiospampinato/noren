@@ -14,6 +14,11 @@ const app = new Server ();
 
 app.get ( '/', ( req, res ) => {
 
+  // const start = Date.now ();
+  // while ( true ) {
+  //   if ( Date.now () - start >= 5 ) break;
+  // }
+
   res.json ({
     hello: 'world'
   });
