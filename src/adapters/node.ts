@@ -1,7 +1,7 @@
 
 /* IMPORT */
 
-import events from 'node:events';
+import {once} from 'node:events';
 import {createServer} from 'node:http';
 import process from 'node:process';
 import {Readable} from 'node:stream';
@@ -122,7 +122,7 @@ class NodeServer extends Server {
 
     if ( address ) return address.port;
 
-    await events.once ( this.server, 'listening' );
+    await once ( this.server, 'listening' );
 
     return this.port ();
 
